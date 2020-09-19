@@ -1,28 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title>Add Shopping List</title>
-  </head>
-  <body>
-    <h1>Add Shopping List Items</h1>
+
+<head>
+  <title>Add Shopping List</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+</head>
+
+<body>
+  <div class="container">
     <form>
       <div>
         <label>Enter Item</label>
         <input name="itemName" type="text" id="item" autofocus />
       </div>
-      <button type="submit">Add Item</button>
+      <button class="btn waves-effect waves-light" type="submit">Add Item</button>
     </form>
-    <script>
-        const electron = require("electron");
-        const { ipcRenderer } = electron
-        const newItemFormElem = document.querySelector("form")
-        newItemFormElem.addEventListener("submit" , submitForm)
-        function submitForm(evt){
-            evt.preventDefault();
-            const formData = new  FormData(evt.target)
-            const newTodo =formData.get("itemName")
-            ipcRenderer.send("item:add" , newTodo)
-          }
-    </script>
-  </body>
+  </div>
+  <script>
+    const electron = require("electron");
+    const { ipcRenderer } = electron
+    const newItemFormElem = document.querySelector("form")
+    newItemFormElem.addEventListener("submit", submitForm)
+    function submitForm(evt) {
+      evt.preventDefault();
+      const formData = new FormData(evt.target)
+      const newTodo = formData.get("itemName")
+      ipcRenderer.send("item:add", newTodo)
+    }
+  </script>
+</body>
+
 </html>

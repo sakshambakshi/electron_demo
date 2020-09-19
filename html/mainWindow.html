@@ -1,9 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <title>Shopping List</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
 </head>
+
 <body>
-    <h1>Shopping List</h1>
+    <nav>
+        <div class="nav-wrapper"><a  class="brand-logo center">Shopping List</a></div>
+    </nav>
+    
+    <!-- Shopping List -->
+    <ul  id="itemList">
+
+    </ul>
+    <script>
+        const electron = require("electron");
+        const { ipcRenderer } = electron
+        const itemListElem = document.querySelector("#itemList");
+
+        function removeAllItems() {
+            itemListElem.classList.remove("collection")
+            Array.from(itemListElem.querySelectorAll("li")).forEach(list => { itemListElem.removeChild(list) })
+        }
+
+        function removeItem(evt) {
+            evt.target.remove()
+            if(Array.from(itemListElem.querySelectorAll("li")).length  == 0){
+                itemListElem.classList.remove("collection")
+            }
+        }
+
+        //Remove Item
+        itemListElem.addEventListener("dblclick", removeItem)
+
+        ipcRenderer.on("item:add", function (evt, item) {
+            if (item) {
+                const li = document.createElement("li")
+                li.classList.add("collection-item")
+                const textNode = document.createTextNode(item)
+                li.appendChild(textNode)
+                itemListElem.classList.add("collection")
+                itemListElem.appendChild(li)
+
+
+            }
+
+            ipcRenderer.on("clear:items", function (evt, items) {
+                // console.log("clear all")
+                removeAllItems()
+                // itemListElem.childNodes
+            })
+        })
+    </script>
 </body>
+
 </html>

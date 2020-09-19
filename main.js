@@ -1,10 +1,12 @@
 const electron = require("electron")
 const url = require("url")
 const path = require("path")
+process.env.NODE_ENV = "Production"
+
 const { NODE_ENV } = process.env
 const { platform } = process
 
-const { app, BrowserWindow, Menu , ipcMain} = electron
+const { app, BrowserWindow, Menu, ipcMain } = electron
 
 let mainWindow
 
@@ -27,11 +29,18 @@ app.on("ready", (evt) => {
     Menu.setApplicationMenu(mainMenu)
 })
 
-function createAddWindow() {
+//Catch add item
+ipcMain.on("item:add", function (evt, item) {
+    mainWindow.webContents.send("item:add", item)
+    console.log(item)
+    addWindow.close()
+})
 
+function createAddWindow() {
+    // CREATE NEW WINDOW TO ADD WINDOW
     addWindow = new BrowserWindow({
         width: 300,
-        heigh: 200,
+        heigh: 100,
         title: "Add Shoping List Item",
         webPreferences: {
             nodeIntegration: true
@@ -54,11 +63,17 @@ const mainMenuTemplate = [
         submenu: [
             {
                 label: "Add Item",
+                accelerator: platform == "darwin" ? "Command+N" : "Ctrl+N",
                 click() {
                     createAddWindow();
                 }
             },
-            { label: "Clear Items" },
+            {
+                label: "Clear Items", 
+                click() {
+                    mainWindow.webContents.send("clear:items")
+                }
+            },
             {
                 label: "Quit",
                 accelerator: platform == "darwin" ? "Command+Q" : "Ctrl+Q",
@@ -76,6 +91,7 @@ if (platform == "darwin") {
 }
 
 if (NODE_ENV != "Production") {
+    console.log(NODE_ENV)
     mainMenuTemplate.push({
         label: "Developer Tools",
         submenu: [
