@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Add Shopping List</title>
+  </head>
+  <body>
+    <h1>Add Shopping List Items</h1>
+    <form>
+      <div>
+        <label>Enter Item</label>
+        <input name="itemName" type="text" id="item" autofocus />
+      </div>
+      <button type="submit">Add Item</button>
+    </form>
+    <script>
+        const electron = require("electron");
+        const { ipcRenderer } = electron
+        const newItemFormElem = document.querySelector("form")
+        newItemFormElem.addEventListener("submit" , submitForm)
+        function submitForm(evt){
+            evt.preventDefault();
+            const formData = new  FormData(evt.target)
+            const newTodo =formData.get("itemName")
+            ipcRenderer.send("item:add" , newTodo)
+          }
+    </script>
+  </body>
+</html>
